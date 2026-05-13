@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barangay Blotter Reporting System - Register</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Barangay Blotter Reporting System</h1>
+    <h2>Resident Registration</h2>
+    
+    <form id="regForm">
+      <label for="firstName">First Name</label>
+      <input type="text" id="firstName" required>
+      
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" required>
+      
+      <label for="regUsername">Username</label>
+      <input type="text" id="regUsername" required>
+      
+      <label for="regPassword">Password</label>
+      <input type="password" id="regPassword" required>
+      
+      <button type="submit">Register</button>
+    </form>
+    
+    <p><a href="index.html" class="link">Back to Login</a></p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/modals.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/blotter.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
+
+
