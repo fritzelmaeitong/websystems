@@ -1,4 +1,4 @@
-﻿const STORAGE_KEYS = {
+const STORAGE_KEYS = {
   users: 'users',
   reports: 'blotterReports',
   currentUser: 'currentUser'
@@ -26,8 +26,19 @@ function getLocalReports() {
   return JSON.parse(localStorage.getItem(STORAGE_KEYS.reports));
 }
 
+function shouldUseLocalStorage() {
+  return !window.isSupabaseConfigured || !window.isSupabaseConfigured();
+}
+
+function ensureSupabaseReady() {
+  if (!window.isSupabaseReady || !window.isSupabaseReady()) {
+    throw new Error(window.getSupabaseStatusMessage ? window.getSupabaseStatusMessage() : 'Supabase is not ready.');
+  }
+}
+
 async function getUsers() {
-  if (!window.isSupabaseReady()) return getLocalUsers();
+  if (shouldUseLocalStorage()) return getLocalUsers();
+  ensureSupabaseReady();
 
   const { data, error } = await window.supabaseClient
     .from('profiles')
@@ -45,12 +56,14 @@ async function getUsers() {
 }
 
 async function saveUser(user) {
-  if (!window.isSupabaseReady()) {
+  if (shouldUseLocalStorage()) {
     const users = getLocalUsers();
     users.push(user);
     localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
     return;
   }
+
+  ensureSupabaseReady();
 
   const { error } = await window.supabaseClient.from('profiles').insert({
     first_name: user.firstName,
@@ -63,9 +76,10 @@ async function saveUser(user) {
 }
 
 async function findUser(username) {
-  if (!window.isSupabaseReady()) {
+  if (shouldUseLocalStorage()) {
     return getLocalUsers().find((user) => user.username === username);
   }
+  ensureSupabaseReady();
 
   const { data, error } = await window.supabaseClient
     .from('profiles')
@@ -85,7 +99,8 @@ async function findUser(username) {
 }
 
 async function getBlotterReports() {
-  if (!window.isSupabaseReady()) return getLocalReports();
+  if (shouldUseLocalStorage()) return getLocalReports();
+  ensureSupabaseReady();
 
   const { data, error } = await window.supabaseClient
     .from('blotter_reports')
@@ -102,26 +117,30 @@ async function getBlotterReports() {
 }
 
 async function saveBlotterReport(report) {
-  if (!window.isSupabaseReady()) {
+  if (shouldUseLocalStorage()) {
     const reports = getLocalReports();
     reports.push(report);
     localStorage.setItem(STORAGE_KEYS.reports, JSON.stringify(reports));
     return;
   }
 
-  const { error } = await window.supabaseClient.from('blotter_reports').insert({
+  ensureSupabaseReady();
+
+  const { data, error } = await window.supabaseClient.from('blotter_reports').insert({
     resident_username: report.residentUsername,
     report_data: report
-  });
+  }).select('id').single();
 
   if (error) throw error;
+  return data?.id;
 }
 
 async function saveAllBlotterReports(reports) {
-  if (!window.isSupabaseReady()) {
+  if (shouldUseLocalStorage()) {
     localStorage.setItem(STORAGE_KEYS.reports, JSON.stringify(reports));
     return;
   }
+  ensureSupabaseReady();
 
   await Promise.all(reports.map(async (report) => {
     if (!report._id) return;
