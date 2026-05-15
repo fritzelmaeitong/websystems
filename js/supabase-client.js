@@ -6,8 +6,8 @@
   const hasRealConfig = Boolean(
     supabaseUrl &&
     supabaseAnonKey &&
-    !supabaseUrl.includes('YOUR_PROJECT_ID') &&
-    !supabaseAnonKey.includes('YOUR_SUPABASE_ANON_KEY')
+    !supabaseUrl.includes('https://ksfgupvgzlftbsqyuvnq.supabase.co') &&
+    !supabaseAnonKey.includes('sb_publishable_RT6qalYiWDhxK_vXZNs1jw_5VStziX0')
   );
 
   window.supabaseClient = null;
